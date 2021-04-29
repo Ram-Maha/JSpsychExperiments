@@ -1,0 +1,243 @@
+<! doctype html>
+<html>
+	<head>
+	
+		<!--
+		
+		RDK plugin for JsPsych
+		----------------------
+		
+		This code was created in the Consciousness and Metacognition Lab at UCLA, 
+		under the supervision of Brian Odegaard and Hakwan Lau
+    
+		----------------------
+		
+		Copyright (C) 2017  Sivananda Rajananda
+		
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+		
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+		
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+		
+		-->
+		
+		<title> Motion_coherence_experiment</title>
+		 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		 <script src = "jspsych-6.3.0/jspsych.js"></script>
+		 <script src ="jspsych-6.3.0/plugins/jspsych-rdk.js"></script>
+		 <script src ="jspsych-6.3.0/plugins/jspsych-image-keyboard-response.js"></script>
+		 <script src ="jspsych-6.3.0/plugins/jspsych-html-keyboard-response.js"></script>
+		 <link href = "jspsych-6.3.0/css/jspsych.css" rel = "stylesheet" type = "text/css"></link>
+	</head>
+	<body>
+	</body>
+	<script>
+        //The main timeline to be fed into jsPsych.init
+		var timeline = [];
+		function set_html_BGgray() {
+    	document.body.style.backgroundColor = 'gray'
+		}
+		//---------Create instructions---------
+		var intro1 = {
+			type: "image-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus:'img/Ins1.png',
+			choices:  [' ']				
+		}
+		timeline.push(intro1);
+		var intro2 = {
+			type: "image-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus:'img/Ins2.png',
+			choices: [' ']			
+		}
+		timeline.push(intro2);
+		var intro3 = {
+			type: "image-keyboard-response",
+			stimulus:'img/Ins3.png',
+			choices: [' ']			
+		}
+		timeline.push(intro3);
+		var intro4 = {
+			type: "image-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus:'img/Ins4.png',
+			choices: [' ']			
+		}
+		timeline.push(intro4);
+		var intro5 = {
+			type: "image-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus:'img/Ins5.png',
+			choices: [' ']			
+		}
+		timeline.push(intro5);
+		var intro6 = {
+			type: "image-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus:'img/Ins6.png',
+			choices: [' ']			
+		}
+		timeline.push(intro6);
+		var fixation ={
+		    type: 'image-keyboard-response',
+  			stimulus: 'img/bullsEye.png',			
+			choices: jsPsych.NO_Keys,
+  			trial_duration: 1000
+		}
+        //timeline.push(fixation);
+		//---------Create trials---------
+				//The test block where all the trials are nested. The properties here will trickle down to all trials in the timeline unless they have their own properties defined		
+        var test_block = {
+			type: "rdk", 
+			timing_post_trial: 1000, //The Inter Trial Interval. You can either have no ITI, or change the display element to be the same color as the stimuli background to prevent flashing between trials
+			number_of_dots: 150, //Total number of dots in the aperture
+            coherent_direction: jsPsych.timelineVariable('coherent_direction'),
+			coherence: jsPsych.timelineVariable('coherence'),
+            correct_choice: jsPsych.timelineVariable('correct_choice'),
+            RDK_type: 3, //The type of RDK used
+			aperture_type: 1, //Circle
+			aperture_width: 644, //Matches 14deg diameter
+			choices: ["a", "l"], //Choices available to be keyed in by participant
+			trial_duration: 10000, //Duration of each trial in ms
+			fixation_cross:true,
+			fixation_cross_width: 23,
+			fixation_cross_height: 23,
+			fixation_cross_thickness: 6,
+			dot_color: "black",
+			dot_radius:2.5, //matching 5pixels from Elle's paper
+			move_distance:4, //Speed parameter 
+			dot_life:12,
+			reinsert_type: 1,
+			 //The timeline of all the trials
+			on_finish: function (data){
+				var acc =false;
+				if(data.correct_choice == data.response){
+					acc = true;
+				}
+				data.accuracy=acc;
+            }
+        }
+	            
+	
+		//Create an array of 2 different trials (different conditions)
+		var trial_info = [
+			{//Condition 1
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180, //The coherent direction for Condition 1 (dots move left)
+                coherence: 0.06,
+				data:{condition:'6% Left',correct_choice: "a"}
+			},
+			{//Condition 2
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0, //The coherent direction for Condition 2 (dots move right)
+                coherence: 0.06,
+				data:{condition:'6% Right',correct_choice: "l"}
+			},
+            {//Condition 3
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180, //The coherent direction for Condition 1 (dots move left)
+                coherence: 0.12,
+				data:{condition:'12% Left',correct_choice: "a"}
+			},
+            {//Condition 4
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0, //The coherent direction for Condition 2 (dots move right)
+                coherence: 0.12,
+				data:{condition:'12% Right',correct_choice: "l"}
+			},
+            {//Condition 5
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180, //The coherent direction for Condition 1 (dots move left)
+                coherence: 0.24,
+				data:{condition:'24% Left',correct_choice: "a"}
+			},
+            {//Condition 6
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0, //The coherent direction for Condition 2 (dots move right)
+                coherence: 0.24,
+				data:{condition:'24% Right',correct_choice: "l"}
+			},
+            {//Condition 7
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180, //The coherent direction for Condition 1 (dots move left)
+                coherence: 0.48,
+				data:{condition:'48% Left',correct_choice: "a"}
+			},
+            {//Condition 8
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0, //The coherent direction for Condition 2 (dots move right)
+                coherence: 0.48,
+				data:{condition:'48% Right',correct_choice: "l"}
+			},		
+		];
+		
+		//Multiply based on how many trials you need and randomize the trial order
+	var trial_info = jsPsych.randomization.repeat(trial_info,6); //Double the number of trials and shuffle them
+        
+	var feedback_block ={
+			type:"html-keyboard-response",
+			on_start: set_html_BGgray,
+			stimulus: function() {
+				//if accuracy ==1, report correct and give them +3 points 
+				var feedback_text ='<sapn style="font-size:30px;color:red;">-3</span>';
+				var last_trial_accuracy = jsPsych.data.getLastTrialData().values()[0].accuracy;
+				if (last_trial_accuracy == true) {
+					feedback_text ='<sapn style="font-size:30px;color:green;">+3!!</span>';
+				}
+				return feedback_text
+				//if accuracy ==0, report incorrect and give them -3 points 
+			},
+			choices: jsPsych.NO_Keys,
+			trial_duration: 1000
+		}
+		
+        // Inter block interval image 
+		var IBI = {
+			type: "instructions",
+			page:['Great Job, Level Up!', 'When ready click the next block button to start!'],
+			show_clickable_nav:true,
+			}
+		//---------Prepare the main timeline---------
+        //for (var i=0; i<RDK_trial_info.length; i++) {
+		   var MotionCohProcedure ={
+               timeline: [test_block,feedback_block],
+               timeline_variables: trial_info, 
+               randomize_order: true, 
+			   repetition: 6,
+            }
+		    timeline.push(MotionCohProcedure);
+			timeline.push(IBI);
+			
+		//main_timeline.push(fixation);
+		//main_timeline.push(test_block);
+        //main_timeline.push(feedback_block);
+        //}
+
+		//---------Run the experiment---------
+		
+		//Initiate the experiment
+        // generate a url with c=1 to send it back to the dash board
+		jsPsych.init({
+			timeline: timeline,
+			on_finish: 
+            function(){ //Execute this when the experiment finishes
+				// get csv representation of data and log to console
+				// first argument is the format, second is the filename.
+				// the format can be either 'csv' or 'json'.
+				jsPsych.data.get().localSave('csv','mydata.csv');
+				jsPsych.data.displayData(); //Display the data onto the browser screen
+		        
+			}
+		})
+		
+	</script>
+</html>
